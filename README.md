@@ -7,7 +7,7 @@ for [instance](example1.py)
 
 ```python
 import torch
-from torch.nn import Module, Linear, Sequential
+from torch.nn import Module, Linear
 
 class MyModule(Module):
     def __init__(self):
