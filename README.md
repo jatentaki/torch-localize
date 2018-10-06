@@ -91,7 +91,7 @@ from which we can only find that the error is in one of the linear layers, but
 we are not told which one (in this toy example it's easy enough to figure out
 by looking at the sizes mentioned in the `RuntimeError`, but it's not always the 
 case). This repository introduces a decorator called `localized_module` which
-decorates a module, but adding an optional `name` parameter to its `__init__`,
+decorates a module, adding an optional `name` parameter to its `__init__`,
 automatically assigning it to `.name` attribute of the module and and wraps its
 `forward` method to include this name in traceback when an exception happens.
 Now, our code looks like [this](example3.py):
