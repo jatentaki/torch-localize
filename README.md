@@ -1,8 +1,8 @@
 # torch-localize
 Decorators for better tracebacks in complex PyTorch models.
 
-## Problem description
-If we make an eror writing simple models, in which we manually call each module,
+# Problem description
+If we make an error writing simple models, in which we manually call each module,
 for [instance](example1.py)
 
 ```python
@@ -96,7 +96,7 @@ automatically assigning it to `.name` attribute of the module and and wraps its
 `forward` method to include this name in traceback when an exception happens.
 Now, our code looks like [this](example3.py):
 
-```
+```python
 import torch
 from torch.nn import Linear, Sequential
 import torch_localize
@@ -147,3 +147,12 @@ While the examples given here are toy, I found this decorator very useful for
 models which make use of `nn.ModuleList` and `nn.ModuleDict`. An example is when
 writing generic network constructors for Unets with variable depth
 and numbers of feature maps at each layer.
+
+# API
+This module exports two decorators: `localized` and `localized_module` as well as `LocalizedException`.
+## `localized`
+`localized` is a method wrapper which runs the original method and, in case of an exception, checks if `self` has attribute `name`. If so, it raises `LocalizedException` from the original exception, including `name` in the message. If `name` is not present among attributes, the message will default to `<unnamed ClassName>`. It is provided in case somebody wants to localize exceptions in other methods than just `forward` (which is being decorated by default, when using `localized_module`).
+## `localized_module`
+`localized_module` modifies class `__init__` to include `name=None` in its argument list and assigns the value to objects `name` attribute, as well as wraps the `forward` method with `localized`. `localized_module` performs a bunch of sanity checks to make sure it's not overwriting existent parameter/attribute names, and should be fool proof enough to detect most attempts to misuse it. One way to cause trouble I can think of is when wrapping a class which depends on catching a `name` parameter in its `**kwargs`, since the `name` parameter is being deleted from `**kwargs` before passing it to class `__init__`. I expect this corner case to be exceedingly rare in real code.
+## `LocalizedException`
+This class is provided in case somebody wants to extent the functionality of this library
