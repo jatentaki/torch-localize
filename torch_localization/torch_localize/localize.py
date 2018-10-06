@@ -75,11 +75,8 @@ if __name__ == '__main__':
             m = Mod(name='Slim Shady')
             localization = 'Exception in Slim Shady'
 
-            try:
+            with self.assertRaisesRegex(LocalizedException, localization):
                 m.forward('Hi')
-            except LocalizedException as e:
-                msg = str(e)
-                self.assertTrue(localization in msg)
 
 
         def test_correct_unnamed(self):
@@ -94,11 +91,8 @@ if __name__ == '__main__':
             m = Mod()
             localization = 'Exception in <unnamed {}>'.format(Mod.__name__)
 
-            try:
+            with self.assertRaisesRegex(LocalizedException, localization):
                 m.forward('Hi')
-            except LocalizedException as e:
-                msg = str(e)
-                self.assertTrue(localization in msg)
 
 
         def test_not_module(self):
