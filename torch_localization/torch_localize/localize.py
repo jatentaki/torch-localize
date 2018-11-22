@@ -6,6 +6,10 @@ class LocalizedException(Exception):
     pass
 
 
+def default_name(entity):
+    return '<unnamed {}>'.format(type(entity).__name__)
+
+
 def localized(method):
     ''' Adds module name to traceback '''
     @functools.wraps(method)
@@ -15,7 +19,7 @@ def localized(method):
         except Exception as e:
             name = getattr(self, 'name', None)
             if name is None:
-                name = '<unnamed {}>'.format(type(self).__name__)
+                name = default_name(self)
             raise LocalizedException('Exception in ' + name) from e
 
     return wrapped
@@ -44,7 +48,7 @@ def localized_module(cls):
             # delete it so it doesn't propagate to the wrapped class' __init__
             del kwargs['name']
         else:
-            name = None
+            name = default_name(self)
 
         cls_init(self, *args, **kwargs)
         if hasattr(self, 'name'):
